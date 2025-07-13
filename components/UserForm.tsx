@@ -8,6 +8,10 @@ import {
   Box,
   Typography,
   Paper,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormLabel,
 } from "@mui/material";
 import { User } from "../types/User";
 
@@ -19,8 +23,9 @@ interface Props {
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  phone: Yup.string().matches(/^[0-9]{10}$/, "Phone number must be  10 digits")
-  .required("Phone is required"),
+  phone: Yup.string()
+    .matches(/^[0-9]{10}$/, "Phone number must be  10 digits")
+    .required("Phone is required"),
   age: Yup.number().min(0).required("Age is required"),
   address: Yup.string().required("Address is required"),
   role: Yup.string()
@@ -35,12 +40,11 @@ const UserForm: React.FC<Props> = ({ initialValues, onSubmit }) => {
   const formik = useFormik<User>({
     initialValues,
     validationSchema,
-    enableReinitialize: true, 
+    enableReinitialize: true,
     onSubmit: async (values, { resetForm }) => {
-    await onSubmit(values);  
-    resetForm();
+      await onSubmit(values);
+      resetForm();
     },
-    
   });
 
   return (
@@ -122,23 +126,28 @@ const UserForm: React.FC<Props> = ({ initialValues, onSubmit }) => {
           <MenuItem value="Manager">Manager</MenuItem>
         </TextField>
 
-        <TextField
-          select
-          fullWidth
-          margin="normal"
-          label="Status"
+        <FormLabel>Status</FormLabel>
+        <RadioGroup
+          row
           name="status"
           value={formik.values.status}
           onChange={formik.handleChange}
-          error={!!formik.errors.status && formik.touched.status}
-          helperText={formik.touched.status && formik.errors.status}
         >
-          <MenuItem value="Active">Active</MenuItem>
-          <MenuItem value="Inactive">Inactive</MenuItem>
-        </TextField>
+          <FormControlLabel value="Active" control={<Radio />} label="Active" />
+          <FormControlLabel
+            value="Inactive"
+            control={<Radio />}
+            label="Inactive"
+          />
+        </RadioGroup>
+        {formik.touched.status && formik.errors.status && (
+          <Typography color="error" variant="caption">
+            {formik.errors.status}
+          </Typography>
+        )}
 
         <Box mt={2}>
-          <Button type="submit" variant="contained" color="primary" fullWidth>
+          <Button type="submit" variant="contained" color="success" fullWidth>
             {initialValues.id ? "Update User" : "Create User"}
           </Button>
         </Box>

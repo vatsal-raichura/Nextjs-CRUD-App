@@ -18,16 +18,16 @@ const UserTable: React.FC<Props> = ({ users, refreshUsers }) => {
     if (confirm("Are you sure you want to delete this user?")) {
       try {
         await deleteUser(id);
-        refreshUsers(); // re-fetch users after deletion
+        refreshUsers(); 
       } catch (err) {
         alert("Failed to delete user.");
-        console.error(err);
+        
       }
     }
   };
 
   const handleEdit = (id: string) => {
-    router.push(`/form?id=${id}`); // send ID as query param
+    router.push(`/form?id=${id}`); 
   };
 
   const columns: GridColDef[] = [
